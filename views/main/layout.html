@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <!-- <link rel="stylesheet" href="../../public/css/reset.css"> -->
+    <!-- <link rel="stylesheet" href="../../public/css/main/mainIndex.css"> -->
+    <link rel="stylesheet" href="../../public/css/Login.css">
+</head>
+
+<body>
+    <div>
+        <!--顶部-->
+        <!--ToDo 此处采用卡片式轮播方式实现，用户博文or图片 轮播-->
+        <!-- <header class="headerArea"><p>TODO 轮播 ...</p></header> -->
+        <!--模块栏-->
+        <!-- <nav class="moduleBar">
+        <ul>
+            {% if category =='' %}
+            <li><a class="active" href="/">首页</a></li>
+            {% else %}
+            <li><a href="/">首页</a></li>
+            {% endif %}
+            {% for cate in categories %}
+            {% if category === cate.id %}
+            <li><a class="active" href="/?category={{ cate.id }}">{{ cate.name }}</a></li>
+            {% else %}
+            <li><a href="/?category={{ cate.id }}">{{ cate.name }}</a></li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+    </nav> -->
+        <!--内容区-->
+        <div class="content">
+            <div>
+                <div class="rightModule borderColor">
+                    {% if userInfo._id %}
+                    <div class="rightBox borderColor" id="userInfoBox">
+                        <div style="text-align: center; font-size: 50px; color: aliceblue; margin-top: 200px;">用户信息</div>
+                        <p class="line" style="color: aliceblue; font-size: 50px; text-align: center;">{{ userInfo.username }}</p>
+                        {% if userInfo.isAdmin %}
+                        <p class="line" style="text-align: center; font-size: 50px;"><span>欢迎登陆！</span><a href="/admin" style="color: aliceblue;">进入后台管理？</a></p>
+                        {% else %}
+                        <p class="line" style="text-align: center; font-size: 50px;">欢迎你！</p>
+                        {% endif %}
+                        <div class="textRight" style="text-align: center; font-size: 50px;"><a href="javascript:;" class="colMint" name="logout">退出</a></div>
+                    </div>
+                    {% else %}
+                    <div class="rightBox borderColor" id="loginBox">
+                        <div style="text-align: center; font-size: 50px; color: aliceblue; margin-top: 200px;">Login</div>
+                        <form method="post" style="text-align: center;">
+                            <div class="line"><input style="width: 500px;  margin-top: 50px; color: aliceblue;" name="username" placeholder="用户名" type="text"></div>
+                            <div class="line"><input style="width: 500px; " name="password" required="required" placeholder="密码" type="password"></div>
+                            <div class="line"><button style="width: 500px; height: 30px; margin-top: 50px;" type="submit" id="loginBtn">登录</button></div>
+                            <p class="textRight">
+                                <a href="javascript:;" class="colMint" name="backLogin">返回注册</a>
+                                <a href="javascript:;" class="colMint" name="getPassword">找回密码</a>
+                            </p>
+                        </form>
+                        <p class="colWarning textCenter"></p>
+                    </div>
+                    <div class="rightBox borderColor boxHidden" id="registerBox" style="text-align: center;">
+                        <div style="text-align: center; font-size: 50px; color: aliceblue; margin-top: 200px;">注册</div>
+                        <div class="line"><input style="width: 500px;  margin-top: 50px; color: aliceblue;" name="username" placeholder="用户名" type="text"></div>
+                        <div class="line"><input style="width: 500px; " name="password" required="required" placeholder="密码" type="password"></div>
+                        <div class="line"><input style="width: 500px; " name="repassword" required="required" placeholder="确认" type="password"></div>
+                        <div class="line"><button style="width: 500px; height: 50px; margin-top: 30px;" type="submit" class="registerBtn" id="registerBtn">注册</button>
+                        </div>
+                        <p class="textRight">已有账号 ?<a href="javascript:;" class="colMint" name="login">马上登录</a></p>
+                        <p class="colWarning textCenter"></p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!--底部-->
+        <footer style=" text-align: center; margin-top: 100px; color: aliceblue; ">Copyright © -- RabbitGod</footer>
+    </div>
+
+</body>
+<script type="text/javascript " src="../../public/plug-in/jquery-3.1.1.js "></script>
+<script type="text/javascript " src="../../public/js/main/mainIndex.js "></script>
+
+</html>

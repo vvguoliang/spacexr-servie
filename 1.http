@@ -1,0 +1,9 @@
+GET http://10.1.40.20:8082/user HTTP/1.1
+content-type: application/json
+###
+POST http://10.1.40.20:8082/user/getCodeByTel HTTP/1.1
+content-type: application/json
+{
+	"tel": "15510706030",
+	"category": "web"
+}
