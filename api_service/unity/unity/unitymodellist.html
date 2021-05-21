@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>文件上传</title>
+    <meta name="Generator" content="EditPlus">
+    <meta name="Author" content="">
+    <meta name="Keywords" content="">
+    <meta name="Description" content="">
+    <link href="demo.css" rel="stylesheet" type="text/css" />
+    <link href="../unity/css/uploader.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        body table {
+            border: 0.5px solid black;
+        }
+
+        th {
+            border: 1px solid black;
+            text-align: center;
+            line-height: center;
+            width: 11.5%;
+            height: 40px;
+        }
+
+        td {
+            border: 0.5px solid black;
+            text-align: center;
+            line-height: center;
+        }
+    </style>
+    <script type="text/javascript">
+        function data1() {
+            $.ajax({
+                type: 'post',
+                url: '/api_service/unity/unityPull',
+                data: {},
+                dataType: 'json',
+                success: function (data) {
+                    if (JSON.stringify(data).indexOf('暂时没有数据') !== -1) {
+                        alert("暂时没有数据", function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        var jsonObject = eval(data);
+                        var json = eval(jsonObject['data']);
+
+                        for (var i in json) {
+                            var tr = document.createElement('tr');
+                            var id = document.createElement('td')
+                            var titleName = document.createElement('td')
+                            var assetName = document.createElement('td')
+                            var type1 = document.createElement('td')
+                            var type2 = document.createElement('td')
+                            var platform = document.createElement('td')
+                            var imagePath = document.createElement('td')
+                            var edit = document.createElement('td')
+
+                            var _id = json[i]._id + ''
+                            var type11 = json[i].type1 + '';
+                            var type22 = json[i].type2 + '';
+                            var platform1 = json[i].platform + '';
+                            id.innerHTML = _id;
+                            titleName.innerHTML = json[i].titleName + '';
+                            assetName.innerHTML = json[i].assetName + '';
+                            type1.innerHTML = type11;
+                            type2.innerHTML = type22;
+                            platform.innerHTML = platform1;
+                            imagePath.innerHTML = '<img src=' + json[i].imagePath + '' + '  style="width: 150px; height: 150px;" />'
+                            if (type11 === 'PIE' && type22 === '') {
+                                edit.innerHTML = "<button type='button'  onclick=onType(" + "\'" + _id + "\'" + "," + "\'" + type11 + "/" + platform1 + "/" + "\'" + ")>删除</button>"
+                            } else {
+                                edit.innerHTML = "<button type='button'  onclick=onType(" + "\'" + _id + "\'" + "," + "\'" + type11 + "/" + type22 + "/" + platform1 + "/" + "\'" + ")>删除</button>"
+                            }
+
+                            tr.appendChild(id);
+                            tr.appendChild(titleName);
+                            tr.appendChild(assetName);
+                            tr.appendChild(type1);
+                            tr.appendChild(type2);
+                            tr.appendChild(platform);
+                            tr.appendChild(imagePath);
+                            tr.appendChild(edit);
+
+                            var tbody = document.getElementById('tbody');
+                            tbody.appendChild(tr);
+                        }
+                    }
+                },
+                error: function (err) {
+                    console.log(err.message);
+                }
+            });
+        }
+
+        function onType(type, idtype) {
+            $.ajax({
+                type: 'post',
+                url: '/api_service/unity/deleteData',
+                data: {
+                    id: type,
+                    idpath: idtype
+                },
+                dataType: 'json',
+                success: function (data) {
+                    if (JSON.stringify(data).indexOf('失败') !== -1) {
+                        alert("删除失败", function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        alert("删除成功", function () {
+                            window.location.reload();
+                        });
+                    }
+                },
+                error: function (err) {
+                    console.log(err.message);
+                }
+            });
+        }
+    </script>
+</head>
+
+<body>
+    <div id="header" class="header">展示模型</div>
+    <div class="main">
+        <div id="sidebar" class="sidebar"></div>
+        <div class="content" style="margin-left: 250px;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>类型ID</th>
+                        <th>类型I名字</th>
+                        <th>类型II名字</th>
+                        <th>类型I 分类</th>
+                        <th>类型II 分类</th>
+                        <th>使用平台</th>
+                        <th>使用图片</th>
+                        <th>编辑操作</th>
+                        <th><input type='button' value='导入数据' onclick="data1()"></th>
+                    </tr>
+                </thead>
+                <tbody id='tbody'>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script type="text/javascript" src="demo.js"></script>
+
+    <script type="text/javascript" src="../unity/js/Q.js"></script>
+    <script type="text/javascript" src="../unity/js/Q.Uploader.js"></script>
+    <script type="text/javascript" src="../unity/js/Q.Uploader.UI.js"></script>
+
+</body>
+<script type="text/javascript" src="../unity/js/plug-in/jquery-3.1.1.js"></script>
+<script type="text/javascript" src="../unity/js/plug-in/bootstrap-3.3.7/js/bootstrap.js"></script>
+
+</html>

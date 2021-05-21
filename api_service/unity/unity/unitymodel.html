@@ -1,0 +1,297 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>上传模型</title>
+    <link href="demo.css" rel="stylesheet" type="text/css" />
+    <link href="../unity/css/uploader.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../unity/js/public/plug-in/bootstrap-3.3.7/css/bootstrap.css">
+    <link rel="stylesheet" href="../unity/js/public/plug-in/bootstrap-3.3.7/css/bootstrap-theme.css">
+
+</head>
+
+<body>
+    <div id="header" class="header">上传模型</div>
+    <div class="main">
+        <div id="sidebar" class="sidebar"></div>
+        <div class="content">
+            <label for=" title">类型I Name</label>
+            <input type="text" class="form-control" id="title" autocomplete="off" name="titleName" placeholder="请输入类型I titleName">
+        </div>
+        <div class="content">
+            <label for=" title">类型II Name</label>
+            <input type="text" class="form-control" id="description" autocomplete="off" name="assetName" placeholder="请输入类型II assetName" />
+        </div>
+        <div class="content">
+            <li class="dropdown">
+                <input type="text" id="type1" data-toggle="dropdown" role="button" autocomplete="off" name="type1" placeholder="类型I" style="width: 55px;" />
+                <ul class="dropdown-menu">
+                    <li><a onclick="onType11('交通')">交通</a></li>
+                    <li><a onclick="onType11('军事')">军事</a></li>
+                    <li><a onclick="onType11('城市')">城市</a></li>
+                    <li><a onclick="onType11('室内')">室内</a></li>
+                    <li><a onclick="onType11('植被')">植被</a></li>
+                    <li><a onclick="onType11('PIE')">PIE</a></li>
+                </ul>
+            </li>
+        </div>
+        <div class="content">
+            <li class="dropdown">
+                <input type="text" id="type2" data-toggle="dropdown" role="button" onclick="onType2()" autocomplete="off" name="type2" placeholder="类型II" style="width: 90px;" />
+                <ul class="dropdown-menu" id="type3">
+                </ul>
+            </li>
+        </div>
+        <div class="content">
+            <li class="dropdown">
+                <input type="text" id="type4" data-toggle="dropdown" role="button" autocomplete="off" name="platform" placeholder="发布平台" style="width: 90px;" />
+                <ul class="dropdown-menu">
+                    <li><a onclick="onType41('Windows')">Windows</a></li>
+                    <li><a onclick="onType41('Android')">Android</a></li>
+                    <li><a onclick="onType41('iOS')">iOS</a></li>
+                </ul>
+            </li>
+        </div>
+        <div class="content">
+            <div>
+                <a id="upload-target" class="x-button">选择文件并上传</a>
+            </div>
+            <div id="drop-area">将文件拖拽到此区域</div>
+            <div id="upload-view"></div>
+        </div>
+        <div class="content">
+            <a class="x-button" style="margin-left: 250px;" onclick="FileUpload()">提交</a>
+        </div>
+        <style>
+            ul>li {
+                list-style: square;
+                width: 200px;
+                float: left;
+                font-size: 30px;
+                margin-right: 30px;
+            }
+        </style>
+    </div>
+    <script type="text/javascript" src="demo.js"></script>
+    <script type="text/javascript" src="../unity/js/Q.js"></script>
+    <script type="text/javascript" src="../unity/js/Q.Uploader.js"></script>
+    <script type="text/javascript" src="../unity/js/Q.Uploader.UI.js"></script>
+
+    <script type="text/javascript">
+        var E = Q.event,
+            Uploader = Q.Uploader;
+
+        var boxDropArea = document.getElementById("drop-area");
+
+        var uploader = new Uploader({
+            url: '/api_service/unity/fileupload',
+            target: document.getElementById("upload-target"),
+            view: document.getElementById("upload-view")
+        });
+
+        function set_drag_drop() {
+            //若浏览器不支持html5上传，则禁止拖拽上传
+            if (!Uploader.support.html5) {
+                boxDropArea.innerHTML = "您的浏览器不支持拖拽文件上传！";
+                return;
+            }
+
+            //配置中关闭了html5上传
+            if (!uploader.html5) {
+                boxDropArea.innerHTML = "您在配置中关闭了拖拽文件上传！";
+                return;
+            }
+
+            //TODO:进一步检测
+
+            //阻止浏览器默认拖放行为
+            E.add(boxDropArea, "dragleave", E.stop);
+            E.add(boxDropArea, "dragenter", E.stop);
+            E.add(boxDropArea, "dragover", E.stop);
+
+            E.add(boxDropArea, "drop", function(e) {
+                E.stop(e);
+
+                //获取文件对象
+                var files = e.dataTransfer.files;
+
+                uploader.addList(files);
+            });
+        }
+        set_drag_drop();
+    </script>
+    <script>
+        function onType2() {
+            var type1 = document.getElementById('type1').value;
+            // type1 = type1.substring(0, 2);
+            if (type1.indexOf("类型") !== -1) {
+                alert("类型I 没有选择");
+            } else {
+                if (type1 === "交通") {
+                    document.getElementById('type3').innerHTML = "<li><a onclick=" + "onType21('汽车')" + ">汽车</a></li><li><a onclick=" + "onType21('船')" + ">船</a></li><li><a onclick=" + "onType21('飞机')" + ">飞机</a></li>";
+                } else if (type1 === "军事") {
+                    document.getElementById('type3').innerHTML = "<li><a onclick=" + "onType21('单兵')" + ">单兵</a></li><li><a onclick=" + "onType21('坦克')" + ">坦克</a></li><li><a onclick=" + "onType21('导弹')" + ">导弹</a></li><li><a onclick=" + "onType21('战机')" + ">战机</a></li><li><a onclick=" + "onType21('装甲车')" + ">装甲车</a></li><li><a onclick=" + "onType21('驱逐舰')" + ">驱逐舰</a></li>";
+                } else if (type1 === "城市") {
+                    document.getElementById('type3').innerHTML = "<li><a onclick=" + "onType21('地标建筑')" + ">地标建筑</a></li><li><a onclick=" + "onType21('建筑')" + ">建筑</a></li><li><a onclick=" + "onType21('护栏')" + ">护栏</a></li><li><a onclick=" + "onType21('标识牌')" + ">标识牌</a></li><li><a onclick=" + "onType21('路灯')" + ">路灯</a></li><li><a onclick=" + "onType21('道路')" + ">道路</a></li>";
+                } else if (type1 === "室内") {
+                    document.getElementById('type3').innerHTML = "<li><a onclick=" + "onType21('桌椅')" + ">桌椅</a></li><li><a onclick=" + "onType21('家电')" + ">家电</a></li><li><a onclick=" + "onType21('沙发')" + ">沙发</a></li>";
+                } else if (type1 === "植被") {
+                    document.getElementById('type3').innerHTML = "<li><a onclick=" + "onType21('岩石')" + ">岩石</a></li><li><a onclick=" + "onType21('树木')" + ">树木</a></li><li><a onclick=" + "onType21('花草')" + ">花草</a></li>"
+                } else if (type1 === "PIE") {
+
+                }
+            }
+        }
+
+        function onType11(string) {
+            document.getElementById('type1').value = string;
+        }
+
+        function onType21(string) {
+            document.getElementById('type2').value = string;
+        }
+
+        function onType41(string) {
+            document.getElementById('type4').value = string;
+        }
+
+        function FileUpload() {
+            var type1 = document.getElementById('type1').value;
+            switch (type1) {
+                case "交通":
+                    type1 = 'Traffic';
+                    break;
+                case "军事":
+                    type1 = 'Military';
+                    break;
+                case "城市":
+                    type1 = 'City';
+                    break;
+                case "室内":
+                    type1 = 'Indoor';
+                    break;
+                case "植被":
+                    type1 = 'Vegetation';
+                    break;
+            }
+            var type2 = document.getElementById('type2').value;
+            switch (type2) {
+                case "汽车":
+                    type2 = 'Car';
+                    break;
+                case "船":
+                    type2 = 'Boat';
+                    break;
+                case "飞机":
+                    type2 = 'Plane';
+                    break;
+                case "单兵":
+                    type2 = 'Individual';
+                    break;
+                case "坦克":
+                    type2 = 'Tank';
+                    break;
+                case "导弹":
+                    type2 = 'Missile';
+                    break;
+                case "战机":
+                    type2 = 'FightPlane';
+                    break;
+                case "装甲车":
+                    type2 = 'ArmoredCar';
+                    break;
+                case "驱逐舰":
+                    type2 = 'Destroyer';
+                    break;
+                case "地标建筑":
+                    type2 = 'Landmark';
+                    break;
+                case "建筑":
+                    type2 = 'Building';
+                    break;
+                case "护栏":
+                    type2 = 'Guardrail';
+                    break;
+                case "标识牌":
+                    type2 = 'Signage';
+                    break;
+                case "路灯":
+                    type2 = 'StreetLamp';
+                    break;
+                case "道路":
+                    type2 = 'Road';
+                    break;
+                case "桌椅":
+                    type2 = 'TableChair';
+                    break;
+                case "家电":
+                    type2 = 'Appliances';
+                    break;
+                case "沙发":
+                    type2 = 'Sofa';
+                    break;
+                case "岩石":
+                    type2 = 'Rock';
+                    break;
+                case "树木":
+                    type2 = 'Tree';
+                    break;
+                case "花草":
+                    type2 = 'Flowers';
+                    break;
+            }
+
+            //获取上传的File对象，此处是一张图片对象
+            var value1 = document.getElementById('title').value; //第三层文件夹名字
+            var assetName = document.getElementById('description').value;
+            var platform = document.getElementById('type4').value;
+            if (type1 === '') {
+                alert("类型没有填写");
+                return;
+            } else if (type1 !== 'PIE' && type2 === '') {
+                alert("类型没有填写");
+                return;
+            } else if (value1 === '') {
+                alert("类型没有填写");
+                return;
+            } else if (assetName === '') {
+                alert("类型没有填写");
+                return;
+            } else if (platform === '') {
+                alert("类型没有填写");
+                return;
+            }
+            $.ajax({
+                type: 'post',
+                url: '/api_service/unity/filepath',
+                data: {
+                    type1: type1,
+                    type2: type2,
+                    value1: value1,
+                    assetName: assetName,
+                    platform: platform
+                },
+                dataType: 'json',
+                success: function(data) {
+                    if (JSON.stringify(data).indexOf('上传失败') !== -1) {
+                        alert("上传失败", function() {
+                            window.location.reload();
+                        });
+                    } else {
+                        alert("上传成功", function() {
+                            window.location.reload();
+                        });
+                    }
+                },
+                error: function(err) {
+                    console.log(err.message);
+                }
+            });
+        }
+    </script>
+</body>
+<script type="text/javascript" src="../unity/js/plug-in/jquery-3.1.1.js"></script>
+<script type="text/javascript" src="../unity/js/plug-in/bootstrap-3.3.7/js/bootstrap.js"></script>
+
+</html>

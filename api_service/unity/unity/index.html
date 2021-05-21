@@ -1,0 +1,134 @@
+﻿<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>文件上传</title>
+    <link href="demo.css" rel="stylesheet" type="text/css" />
+    <link href="../unity/css/uploader.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+    <div id="header" class="header">上传Unity zip文件</div>
+    <div class="main">
+        <div id="sidebar" class="sidebar"></div>
+        <div class="content">
+            <div>
+                <a id="upload-target" class="x-button">选择文件并上传</a>
+            </div>
+            <div id="drop-area">将文件拖拽到此区域</div>
+            <div id="upload-view"></div>
+        </div>
+        <div style="margin-top: 20px; margin-left: 230px;">
+            <input type="text" id="modifyfile" name="firstname" placeholder="请输入原文件名字">
+            <button type="button" style="width: 100px; height: 50px;" onclick="button()">删除文件</button>
+        </div>
+        <style>
+            ul>li {
+                list-style: square;
+                width: 200px;
+                float: left;
+                font-size: 30px;
+                margin-right: 30px;
+            }
+        </style>
+        <button type="button" style="width: 100px; height: 50px;" onclick="button1()">刷新列表</button>
+        <ul id="uihah"></ul>
+    </div>
+    <script type="text/javascript" src="demo.js"></script>
+
+    <script type="text/javascript" src="../unity/js/Q.js"></script>
+    <script type="text/javascript" src="../unity/js/Q.Uploader.js"></script>
+    <script type="text/javascript" src="../unity/js/Q.Uploader.UI.js"></script>
+
+    <script type="text/javascript">
+        var E = Q.event,
+            Uploader = Q.Uploader;
+
+        var boxDropArea = document.getElementById("drop-area");
+
+        var uploader = new Uploader({
+            url: '/api_service/unity/upload',
+            target: document.getElementById("upload-target"),
+            view: document.getElementById("upload-view")
+        });
+
+        function set_drag_drop() {
+            //若浏览器不支持html5上传，则禁止拖拽上传
+            if (!Uploader.support.html5) {
+                boxDropArea.innerHTML = "您的浏览器不支持拖拽文件上传！";
+                return;
+            }
+
+            //配置中关闭了html5上传
+            if (!uploader.html5) {
+                boxDropArea.innerHTML = "您在配置中关闭了拖拽文件上传！";
+                return;
+            }
+
+            //TODO:进一步检测
+
+            //阻止浏览器默认拖放行为
+            E.add(boxDropArea, "dragleave", E.stop);
+            E.add(boxDropArea, "dragenter", E.stop);
+            E.add(boxDropArea, "dragover", E.stop);
+
+            E.add(boxDropArea, "drop", function (e) {
+                E.stop(e);
+
+                //获取文件对象
+                var files = e.dataTransfer.files;
+
+                uploader.addList(files);
+            });
+        }
+        set_drag_drop();
+    </script>
+    <script>
+        function button1() {
+            $.ajax({
+                type: 'post',
+                url: '/api_service/unity/filename',
+                data: {},
+                // contentType: false,
+                // processData: false,
+                // async: false,//请求设为异步
+                success: function (data) {
+                    var uihah = document.getElementById('uihah');
+                    var json = JSON.parse(data)
+                    var data = json.data;
+                    var type = '';
+                    for (var i = 0; data.length > i; i++) {
+                        type = type + '<li> <a href="http://piecloud.piesat.cn/api_service/unity/' + data[i] + '">' + data[i] + '</a></li>'
+                    }
+                    document.getElementById('uihah').innerHTML = type
+                }
+            });
+        }
+
+        function button() {
+            var modifyfile = document.getElementById('modifyfile').value;
+            console.log(modifyfile)
+            $.ajax({
+                type: 'post',
+                url: '/api_service/unity/delete_file',
+                data: { 'modifyfile': modifyfile },
+                // contentType: false,
+                // processData: false,
+                // async: false,//请求设为异步
+                success: function (data) {
+                    alert("", function () {
+                        window.location.reload();
+                    });
+                },
+                error: function (err) {
+                    console.log(err.message);
+                }
+            });
+        }
+    </script>
+</body>
+<script type="text/javascript" src="../unity/js/plug-in/jquery-3.1.1.js"></script>
+<script type="text/javascript" src="../unity/js/plug-in/bootstrap-3.3.7/js/bootstrap.js"></script>
+
+</html>

@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>VR Social Contact 注册</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=2.0, user-scalable=yes" />
+    <link href="demo.css" rel="stylesheet" type="text/css" />
+    <link href="../unity/css/uploader.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="../unity/js/plug-in/bootstrap-3.3.7/css/bootstrap-theme.css">
+    <link rel="stylesheet" href="../unity/js/plug-in/bootstrap-3.3.7/css/bootstrap.css">
+
+</head>
+
+<body>
+    <div>
+        <table>
+            <td style="background-image:url(../unity/image/backimage.png);background-repeat:no-repeat;" width="990px" height="1005px">
+
+                <img id="fileList" src="../unity/image/defaultavatar.png" style="display:block; margin:0 auto;margin-top: -400px; width: 40%;height: 30%;border-radius:200px;">
+
+                <input type="file" id="fileElem" multiple accept="image/*" onchange="handleFiles(this)" style="display:none; ">
+                <button style="width:250px;height:60px;background-color:rgb(102, 102, 102);border-radius:15px;color: aliceblue; display:block; margin:0 auto; margin-top: 50px;font-size: 18px;" onclick="Avatar()">点击更换头像</button>"
+
+            </td>
+            <td style="background-color: #000000; width: 60%;">
+
+                <div style="margin-left: 200px;">
+                    <img src="../unity/image/aaaa.png">
+
+                    <img src="../unity/image/VRSocial Contact.png">
+                </div>
+                <div>
+                    <style>
+                        /*修改提示文字的颜色*/
+                        
+                        input::-webkit-input-placeholder {
+                            /* WebKit browsers */
+                            color: white;
+                        }
+                        
+                        input:-moz-placeholder {
+                            /* Mozilla Firefox 4 to 18 */
+                            color: white;
+                        }
+                        
+                        input::-moz-placeholder {
+                            /* Mozilla Firefox 19+ */
+                            color: white;
+                        }
+                        
+                        input:-ms-input-placeholder {
+                            /* Internet Explorer 10+ */
+                            color: red;
+                        }
+                    </style>
+                    <input id="username" type="text" name="firstname" value="" placeholder="请输入英文和特殊字符" onpaste="return false" ondragenter="return false" oncontextmenu="return false;" style="ime-mode:disabled;padding: 15px;background-color:rgb(102, 102, 102); color: aliceblue;width: 600px;margin-left: 230px;margin-top: 100px; font-size: 20px;">
+                    <input id="password" type="password" name="firstname" value="" placeholder="请输入密码" onpaste="return false" ondragenter="return false" oncontextmenu="return false;" style="ime-mode:disabled;padding: 15px;background-color:rgb(102, 102, 102);color: aliceblue;width: 600px;margin-left: 230px;margin-top: 100px;font-size: 20px;">
+                    <input id="passwords" type="password" name="firstname " value="" placeholder="请输入确认密码 " onpaste="return false" ondragenter="return false" oncontextmenu="return false;" style="ime-mode:disabled;padding: 15px;background-color:rgb(102, 102, 102);color: aliceblue;width: 600px;margin-left: 230px;margin-top: 100px;font-size: 20px;">
+                    <button style="width:250px;height:60px;background-color:rgb(11, 95, 190);border-radius:40px;color: aliceblue; display:block; margin:0 auto; margin-top: 100px;font-size: 20px;" onclick="Register()">注册</button>
+                </div>
+            </td>
+        </table>
+    </div>
+
+    <script type="text/javascript" src="../unity/js/Q.js"></script>
+    <script type="text/javascript" src="../unity/js/Q.Uploader.js"></script>
+    <script type="text/javascript" src="../unity/js/Q.Uploader.UI.js"></script>
+    <script>
+        window.URL = window.URL || window.webkitURL;
+        var fileElem = document.getElementById("fileElem"),
+            fileList = document.getElementById("fileList"),
+            username = document.getElementById("username"),
+            password = document.getElementById("password"),
+            psaawords = document.getElementById("passwords");
+
+        function image2Base64(img) {
+            var canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+            var dataURL = canvas.toDataURL("image/png");
+            return dataURL;
+        }
+
+        var base64 = "";
+
+        function handleFiles(obj) {
+            var files = obj.files,
+                img = new Image();
+            if (window.URL) {
+                //File API
+                // alert(files[0].name + "," + files[0].size + " bytes");
+                img.src = window.URL.createObjectURL(files[0]); //创建一个object URL，并不是你的本地路径
+                img.onload = function(e) {
+                    base64 = image2Base64(img);
+                    window.URL.revokeObjectURL(this.src); //图片加载后，释放object URL
+                }
+                fileList.src = img.src;
+            } else if (window.FileReader) {
+                //opera不支持createObjectURL/revokeObjectURL方法。用FileReader对象来处理
+                var reader = new FileReader();
+                reader.readAsDataURL(files[0]);
+                reader.onload = function(e) {
+                    base64 = image2Base64(reader);
+                    // alert(files[0].name + "," + e.total + " bytes");
+                    img.src = this.result;
+                    fileList.src = img.src;
+                }
+            } else {
+                //ie
+                obj.select();
+                obj.blur();
+                var nfile = document.selection.createRange().text;
+                document.selection.empty();
+                img.src = nfile;
+                img.onload = function() {
+                    base64 = image2Base64(img);
+                    // alert(nfile + "," + img.fileSize + " bytes");
+                }
+                fileList.src = img.src;
+            }
+        }
+
+        // 点击更换头像
+        function Avatar() {
+            fileElem.click();
+        }
+
+        //限制只用中文
+        function isFullwidthChar(str) {
+            var reg = /[\uFF00-\uFFEF]/;
+            return reg.test(str);
+        }
+
+        //注册按钮
+        function Register() {
+            var url = 'http://10.1.40.24:8082/api_service/unity/api_unity_register';
+            username.value = username.value.replace(/[\u4E00-\u9FA5]|[\uFE30-\uFFA0]/g, '');
+            console.log(username.value);
+            if (username.value === '') {
+                alert("用户名不能为空");
+            } else if (password.value === '') {
+                alert("密码不能为空");
+            } else if (psaawords.value === '') {
+                alert("确认密码不能为空");
+            } else if (password.value !== psaawords.value) {
+                alert("密码与确认密码不一致");
+            } else if (fileList.src.indexOf("defaultavatar") !== -1) {
+                alert("没有上传图片");
+            } else {
+                var httpRequest = new XMLHttpRequest(); //第一步：创建需要的对象
+                httpRequest.open('POST', url, true); //第二步：打开连接/***发送json格式文件必须设置请求头 ；如下 - */
+                httpRequest.setRequestHeader("Content-type", "application/json"); //设置请求头 注：post方式必须设置请求头（在建立连接后设置请求头）
+                var obj = {
+                    username: username.value,
+                    password: psaawords.value,
+                    type: '1',
+                    images: base64
+                };
+                httpRequest.send(JSON.stringify(obj)); //发送请求 将json写入send中
+                /**
+                 * 获取数据后的处理程序
+                 */
+                httpRequest.onreadystatechange = function() { //请求后的回调接口，可将请求成功后要执行的程序写在其中
+                    if (httpRequest.readyState == 4 && httpRequest.status == 200) { //验证请求是否发送成功
+                        var json = httpRequest.responseText; //获取到服务端返回的数据
+                        var obj = JSON.parse(json);
+                        alert(obj.message);
+                    }
+                };
+            }
+        }
+    </script>
+
+</body>
+<script type="text/javascript" src="../unity/js/plug-in/jquery-3.1.1.js"></script>
+<script type="text/javascript" src="../unity/js/plug-in/bootstrap-3.3.7/js/bootstrap.js"></script>
+
+</html>
